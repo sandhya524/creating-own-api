@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   
+        <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f7f7f7;
+    }
+
+    input, button {
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .container {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .container div {
+        background-color: white;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 180px;
+    }
+
+    h3, h4 {
+        margin: 0;
+        padding: 5px 0;
+    }
+</style>
+
+    
+</head>
+<body>
+    <h1>Post-Edit-Delete</h1>
+    <Label>POST DATA:</Label>
+    <input type="text" id="inp1" placeholder="Name">
+    <input type="number" id="inp2" placeholder="Age">
+    <button onclick="postdata()">postdata</button><br> <br>
+
+    <label for="">EDIT DATA:</label>
+    <input type="number" id="userid" placeholder="Enter user id">
+    <input type="text" id="inp3" placeholder="Name">
+    <input type="number" id="inp4" placeholder="Age">
+    <button id="edit">edit</button>
+    <button id="save">save</button><br><br>
+
+    <label for="">DELETE DATA:</label>
+    <input type="number" id="remove" placeholder="Enter user id">
+    <button id="del">delete</button> <br> <br>
+
+    <button onclick="getdata()">Complete data</button>
+
+    <div class="container"></div>
+    <script>
+        async function getdata() {
+            try{
+                data = await fetch("http://localhost:3000/item")
+            let res = await data.json()
+            console.log(res)
+            displaycard(res)
+        }catch(err){
+        console.error("Error fetching data:", err);
+    }
+} 
+        async function postdata() {
+             let inp1 = document.getElementById('inp1').value
+             let inp2 = document.getElementById('inp2').value
+
+             if (!inp1 || !inp2) {
+                alert("Please fill in both fields");
+                return;
+            }
+
+             let obj ={
+                name:inp1,
+                age:Number(inp2)
+             }
+
+           try{
+            let response = await fetch("http://localhost:3000/item",{
+                method:"POST",
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body:JSON.stringify(obj)
+             })
+             if(response.ok){
+                const result = await response.json();
+                console.log("Data posted:", result);
+                    alert("Data posted successfully!");
+                    getdata();
+             }else{
+                console.error("POST failed:", response.status);
+                    alert("Failed to post data: " + response.status);
+             }
+            
+            }  
+            catch(error){
+                console.error("Error during POST:", error);
+                alert("Error posting data");
+
+            }
+            
+            
+            
+        }
+        function displaycard(cards){
+                let parent = document.getElementsByClassName("container")[0]
+                parent.innerText = "";
+
+            cards.forEach(item=>{
+                let card = document.createElement("div");
+                let userId = document.createElement("h4")
+                let userName = document.createElement("h3");
+                let userAge = document.createElement("h4");
+
+                userId.innerText = "User Id: " +item.id
+                userName.innerText = "User Name: "+item.name
+                userAge.innerText = "User Age: "+item.age
+
+                card.append(userName,userAge,userId);
+                parent.append(card)
+
+
+            })
+
+            }
+            let edit =document.getElementById("edit")
+            edit.addEventListener("click",async function(){
+                let id = document.getElementById("userid").value;
+
+                let response2 = await fetch(`http://localhost:3000/item/${id}`);
+                let item = await response2.json();
+                document.getElementById("inp3").value = item.name
+                document.getElementById("inp4").value = item.age
+
+            })
+            let save =document.getElementById("save")
+            save.addEventListener("click",async function(e) {
+                e.preventDefault()
+                let id = document.getElementById("userid").value;
+                let inp3 = document.getElementById("inp3")
+                let inp4 = document.getElementById("inp4")
+
+                let obj2 = {
+                    name:inp3.value,
+                    age:Number(inp4.value)
+                }
+                let response = await fetch(`http://localhost:3000/item/${id}`,{
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body:JSON.stringify(obj2)
+             })
+             })
+
+             let delet = document.getElementById("del");
+             delet.addEventListener("click",async function() {
+                let remov = Number (document.getElementById("remove").value)
+
+                let response3 = await fetch(`http://localhost:3000/item/${remov}`,{
+                    method:"DELETE"
+                })
+              })
+            
+                
+                
+
+                
+               
+            
+
+                
+            
+
+            
+
+
+
+    </script>
+</body>
+</html>
