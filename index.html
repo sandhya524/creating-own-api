@@ -78,7 +78,7 @@
     <script>
         async function getdata() {
             try{
-                data = await fetch("http://localhost:3000/item")
+                data = await fetch("https://creating-own-api.onrender.com/item")
             let res = await data.json()
             console.log(res)
             displaycard(res)
@@ -101,7 +101,7 @@
              }
 
            try{
-            let response = await fetch("http://localhost:3000/item",{
+            let response = await fetch("https://creating-own-api.onrender.com/item",{
                 method:"POST",
                 headers:{
                     'Content-Type':'application/json',
@@ -153,7 +153,7 @@
             edit.addEventListener("click",async function(){
                 let id = document.getElementById("userid").value;
 
-                let response2 = await fetch(`http://localhost:3000/item/${id}`);
+                let response2 = await fetch(`https://creating-own-api.onrender.com/item/${id}`);
                 let item = await response2.json();
                 document.getElementById("inp3").value = item.name
                 document.getElementById("inp4").value = item.age
@@ -170,7 +170,7 @@
                     name:inp3.value,
                     age:Number(inp4.value)
                 }
-                let response = await fetch(`http://localhost:3000/item/${id}`,{
+                let response = await fetch(`https://creating-own-api.onrender.com/item/${id}`,{
                 method:"PUT",
                 headers:{
                     'Content-Type':'application/json',
@@ -183,7 +183,7 @@
              delet.addEventListener("click",async function() {
                 let remov = Number (document.getElementById("remove").value)
 
-                let response3 = await fetch(`http://localhost:3000/item/${remov}`,{
+                let response3 = await fetch(`https://creating-own-api.onrender.com/item/${remov}`,{
                     method:"DELETE"
                 })
               })
